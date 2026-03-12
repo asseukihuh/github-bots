@@ -23,10 +23,10 @@ jobs:
         env:
           TARGET_REPO_URL: ${{ secrets.TARGET_REPO_URL }}
           TARGET_REPO_DIR: ./target-repo
-          GIT_USER_NAME: ${{ secrets.GIT_USER_NAME }}
-          GIT_USER_EMAIL: ${{ secrets.GIT_USER_EMAIL }}
-          MIN_COMMITS: ${{ secrets.MIN_COMMITS }}
-          MAX_COMMITS: ${{ secrets.MAX_COMMITS }}
-          HEARTBEAT_FILE: ${{ secrets.HEARTBEAT_FILE }}
-          COMMIT_MESSAGE_PREFIX: ${{ secrets.COMMIT_MESSAGE_PREFIX }}
+          GIT_USER_NAME: ${{ vars.GIT_USER_NAME }}
+          GIT_USER_EMAIL: ${{ vars.GIT_USER_EMAIL }}
+          MIN_COMMITS: ${{ vars.MIN_COMMITS }}
+          MAX_COMMITS: ${{ vars.MAX_COMMITS }}
+          HEARTBEAT_FILE: ${{ vars.HEARTBEAT_FILE }}
+          COMMIT_MESSAGE_PREFIX: ${{ vars.COMMIT_MESSAGE_PREFIX }}
         run: python bot.py
