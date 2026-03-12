@@ -9,15 +9,42 @@ jobs:
 
     steps:
       - name: Checkout bot repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: '3.12'
 
       - name: Install dependencies
         run: pip install -r requirements.txt
+
+      - name: Validate required configuration
+        env:
+          TARGET_REPO_URL: ${{ secrets.TARGET_REPO_URL }}
+          GIT_USER_NAME: ${{ vars.GIT_USER_NAME }}
+          GIT_USER_EMAIL: ${{ vars.GIT_USER_EMAIL }}
+          MIN_COMMITS: ${{ vars.MIN_COMMITS }}
+          MAX_COMMITS: ${{ vars.MAX_COMMITS }}
+          HEARTBEAT_FILE: ${{ vars.HEARTBEAT_FILE }}
+          COMMIT_MESSAGE_PREFIX: ${{ vars.COMMIT_MESSAGE_PREFIX }}
+        run: |
+          python - <<'PY'
+          import os
+          required = [
+              "TARGET_REPO_URL",
+              "GIT_USER_NAME",
+              "GIT_USER_EMAIL",
+              "MIN_COMMITS",
+              "MAX_COMMITS",
+              "HEARTBEAT_FILE",
+              "COMMIT_MESSAGE_PREFIX",
+          ]
+          missing = [name for name in required if not os.getenv(name, "").strip()]
+          if missing:
+              raise SystemExit(f"Missing required GitHub Secrets/Variables: {', '.join(missing)}")
+          print("Configuration check passed.")
+          PY
 
       - name: Run auto commit bot
         env:
