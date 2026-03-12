@@ -1,0 +1,32 @@
+name: Auto Commit Bot
+
+on:
+  workflow_dispatch:
+
+jobs:
+  run-bot:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout bot repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run auto commit bot
+        env:
+          TARGET_REPO_URL: ${{ secrets.TARGET_REPO_URL }}
+          TARGET_REPO_DIR: ./target-repo
+          GIT_USER_NAME: ${{ secrets.GIT_USER_NAME }}
+          GIT_USER_EMAIL: ${{ secrets.GIT_USER_EMAIL }}
+          MIN_COMMITS: ${{ secrets.MIN_COMMITS }}
+          MAX_COMMITS: ${{ secrets.MAX_COMMITS }}
+          HEARTBEAT_FILE: ${{ secrets.HEARTBEAT_FILE }}
+          COMMIT_MESSAGE_PREFIX: ${{ secrets.COMMIT_MESSAGE_PREFIX }}
+        run: python bot.py
